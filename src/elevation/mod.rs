@@ -1,12 +1,13 @@
 use std::{env, fs};
+use std::fs::DirEntry;
 use log::{debug, info};
 use crate::elevation::Quarter::{BottomLeft, BottomRight, TopLeft, TopRight};
 
 #[derive(Debug)]
 pub enum ElevationError
 {
-    InvalidQuarterDirectorySpecifier,
-    UnknownError
+    InvalidQuarterDirectorySpecifier
+    //UnknownError
 }
 
 #[derive(Debug, PartialEq)]
@@ -45,23 +46,35 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
     let paths = fs::read_dir(directory).unwrap();
     for path in paths
     {
-        let quarter_path = path
-            .as_ref()
-            .unwrap()
-            .path()
-            .into_os_string()
-            .into_string()
-            .unwrap();
-        let quarter_name = path
-            .as_ref()
-            .unwrap()
-            .file_name()
-            .into_string()
-            .unwrap();
-        let quarter = get_quarter_from_directory(&quarter_name)?;
-        debug!("Quarter: {:?}, Path: {}", quarter, quarter_path);
+        let quarter_identity = FSObjectIdentity::from_dir_entry(path.as_ref().unwrap());
+        let quarter = get_quarter_from_directory(&quarter_identity.name)?;
+        debug!("Quarter directory: {:?}, Path: {}", quarter, &quarter_identity.path);
+
+        let q_dir = fs::read_dir(&quarter_identity.path).unwrap();
+        for q_path in q_dir
+        {
+            let latitude_identity = FSObjectIdentity::from_dir_entry(&q_path.as_ref().unwrap());
+            debug!("Latitude directory: {}", latitude_identity.name);
+        }
     }
     Ok(())
+}
+
+struct FSObjectIdentity
+{
+    name: String,
+    path: String
+}
+
+impl FSObjectIdentity
+{
+    fn from_dir_entry(entry: &DirEntry) -> Self
+    {
+        FSObjectIdentity {
+            name: entry.file_name().into_string().unwrap(),
+            path: entry.path().into_os_string().into_string().unwrap()
+        }
+    }
 }
 
 fn get_quarter_from_directory(dir_name: &String) -> Result<Quarter, ElevationError>

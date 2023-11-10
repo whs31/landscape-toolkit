@@ -2,7 +2,6 @@ mod elevation;
 
 use log::info;
 use std::io;
-use byteorder::ReadBytesExt;
 
 fn main() {
     elevation::init();
