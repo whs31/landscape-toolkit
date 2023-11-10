@@ -4,7 +4,7 @@ use crate::tiles::Preload::PreloadTile;
 mod tiles;
 
 fn main() {
-    let a = tiles::elevation(60.0, 30.0, PreloadTile);
+    let a = tiles::elevation(60.032398, 30.230101, PreloadTile);
     match a
     {
         Some(x) => println!("{}", x),
