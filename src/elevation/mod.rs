@@ -1,6 +1,6 @@
 use std::{env, fs};
 use std::fs::DirEntry;
-use log::{debug, info};
+use log::{debug, info, trace};
 use crate::elevation::Quarter::{BottomLeft, BottomRight, TopLeft, TopRight};
 
 #[derive(Debug)]
@@ -54,7 +54,14 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
         for q_path in q_dir
         {
             let latitude_identity = FSObjectIdentity::from_dir_entry(&q_path.as_ref().unwrap());
-            debug!("Latitude directory: {}", latitude_identity.name);
+            debug!("Latitude directory: {}", &latitude_identity.name);
+
+            let lat_dir = fs::read_dir(&latitude_identity.path).unwrap();
+            for lat_path in lat_dir
+            {
+                let longitude_identity = FSObjectIdentity::from_dir_entry(&lat_path.as_ref().unwrap());
+                trace!("Longitude file: {}", &longitude_identity.name);
+            }
         }
     }
     Ok(())
