@@ -1,9 +1,11 @@
 use std::{env, fs};
 use log::{debug, info};
+use crate::elevation::Quarter::{BottomLeft, BottomRight, TopLeft, TopRight};
 
 #[derive(Debug)]
 pub enum ElevationError
 {
+    InvalidQuarterDirectorySpecifier,
     UnknownError
 }
 
@@ -56,7 +58,21 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
             .file_name()
             .into_string()
             .unwrap();
-        debug!("Name: {}, Path: {}", quarter_name, quarter_path);
+        let quarter = get_quarter_from_directory(&quarter_name)?;
+        debug!("Quarter: {:?}, Path: {}", quarter, quarter_path);
     }
     Ok(())
+}
+
+fn get_quarter_from_directory(dir_name: &String) -> Result<Quarter, ElevationError>
+{
+    if dir_name.len() != 1 { return Err(ElevationError::InvalidQuarterDirectorySpecifier); }
+    let as_int = dir_name.parse::<u8>().unwrap();
+    return match as_int {
+        0 => { Ok(TopLeft) }
+        1 => { Ok(TopRight) }
+        2 => { Ok(BottomLeft) }
+        3 => { Ok(BottomRight) }
+        _ => { Err(ElevationError::InvalidQuarterDirectorySpecifier) }
+    }
 }
