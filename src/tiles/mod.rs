@@ -1,13 +1,11 @@
-use crate::tiles::Preload::True;
-
 mod tile;
 mod tile_storage;
 
 #[derive(PartialEq)]
 pub enum Preload
 {
-    True,
-    False
+    PreloadTile,
+    NoPreload
 }
 
 pub fn load_tile(latitude: i8, longitude: i16) -> bool
@@ -36,7 +34,7 @@ pub fn elevation(latitude: f64, longitude: f64, preload: Preload) -> Option<f32>
     if longitude - longitude.floor() < COMP_FACTOR { lon = longitude.floor(); }
     if longitude.ceil() - longitude < COMP_FACTOR { lon = longitude.ceil(); }
 
-    if preload == True { load_tile(lat as i8, lon as i16); }
+    if preload == Preload::PreloadTile { load_tile(lat as i8, lon as i16); }
     let binding = tile_storage::STORAGE.lock().unwrap();
     let elevation =  binding.elevation(lat, lon);
     if elevation.is_err()
