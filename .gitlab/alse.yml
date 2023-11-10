@@ -1,0 +1,7 @@
+astra linux special edition:
+  stage: build
+  tags: [alse]
+  script:
+    - cargo build --package led_toolkit --bin led_toolkit
+
+
