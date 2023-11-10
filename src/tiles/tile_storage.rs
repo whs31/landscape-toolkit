@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
-use std::sync::{Mutex, Arc};
+use std::sync::{Mutex};
 use std::collections::HashMap;
-use std::env::current_dir;
+use std::env;
 use crate::tiles::tile::Tile;
 use crate::tiles::tile_storage::tile_key::TileKey;
 
@@ -9,7 +9,7 @@ pub mod tile_key;
 
 lazy_static!
 {
-    pub static ref TILE_STORAGE: TileStorage = TileStorage::new();
+    pub static ref STORAGE: Mutex<TileStorage> = Mutex::new(TileStorage::new());
 }
 
 pub struct TileStorage
@@ -24,7 +24,7 @@ impl TileStorage
     {
         gdal::DriverManager::register_all();
         TileStorage {
-            storage_path: std::env::current_dir()
+            storage_path: env::current_dir()
                 .unwrap()
                 .into_os_string()
                 .into_string()
