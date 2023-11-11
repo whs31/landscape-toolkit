@@ -28,12 +28,15 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} STATIC)
+#add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
   PUBLIC
     include/LandscapeToolkit/LandscapeToolkit
     include/LandscapeToolkit/landscape_toolkit.h
     include/LandscapeToolkit/rust_landscape_toolkit_ffi.h
+  PRIVATE
+    #main.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

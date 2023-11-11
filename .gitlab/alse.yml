@@ -3,7 +3,7 @@ astra linux special edition:
   tags: [alse]
   script:
     - cargo --version
-    - cargo build --package landscape_toolkit --release
+    - cargo build --release
     - ls target/release -la
     - cp target/release/*.so .
   artifacts:
