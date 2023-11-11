@@ -4,9 +4,9 @@ variables:
   PKG_VER: 0.0.0
 
 include:
-  - local: /.gitlab/alse.yml
+    - local: /.gitlab/alse.yml
   # Removed due to unpresent rustc package on Win64 runner
-  # - local: /.gitlab/win64.yml
+    - local: /.gitlab/win64.yml
 
 stages:
   - build
