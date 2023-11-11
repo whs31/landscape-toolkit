@@ -1,4 +1,5 @@
 mod elevation;
+mod ffi_exports;
 
 use log::{info, warn};
 use std::io;
@@ -11,6 +12,7 @@ fn main() {
     info!("ELEVATION: {} meters", elevation_at((61.0, 31.0)).expect("PANIC"));
     info!("ELEVATION: {} meters", elevation_at((60.0, 30.0)).expect("PANIC"));
     info!("ELEVATION: {} meters", elevation_at((60.5, 30.5)).expect("PANIC"));
+    info!("ELEVATION: {} meters", elevation_at((39.5, 30.5)).expect("PANIC"));
 
     let mut c = String::new();
     info!("Press any key to exit.");

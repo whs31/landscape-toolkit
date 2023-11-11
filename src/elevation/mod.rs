@@ -11,8 +11,10 @@ pub enum ElevationError
     InvalidQuarterDirectorySpecifier,
     KeyAlreadyAvailable,
     InvalidDirectoryPath,
+    InvalidDirectoryHierarchy,
     InvalidFileExtension,
     NoSuchTile,
+    ImageSizeError,
     LibraryError
 }
 

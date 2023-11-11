@@ -9,7 +9,10 @@ use crate::elevation::tile_storage::tile_key::TileKey;
 pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
 {
     info!("Scanning absolute directory: {}", &directory);
-    let paths = fs::read_dir(directory).unwrap();
+    let paths = match fs::read_dir(directory) {
+        Ok(x) => x,
+        Err(_) => { return Err(ElevationError::InvalidDirectoryHierarchy) }
+    };
     for path in paths
     {
         let quarter_identity = FSObjectIdentity::from_dir_entry(path.as_ref().unwrap());
@@ -22,7 +25,10 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
             let latitude_identity = FSObjectIdentity::from_dir_entry(&q_path.as_ref().unwrap());
             //debug!("Latitude directory: {}", &latitude_identity.name);
 
-            let lat_dir = fs::read_dir(&latitude_identity.path).unwrap();
+            let lat_dir = match fs::read_dir(&latitude_identity.path) {
+                Ok(x) => x,
+                Err(_) => { return Err(ElevationError::InvalidDirectoryHierarchy) }
+            };
             for lat_path in lat_dir
             {
                 let longitude_identity = FSObjectIdentity::from_dir_entry(&lat_path.as_ref().unwrap());
