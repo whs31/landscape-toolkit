@@ -16,3 +16,4 @@ astra linux special edition:
   artifacts:
     name: $CI_PROJECT_TITLE-$CI_JOB_NAME-$CI_COMMIT_TIMESTAMP-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
     paths: [./*.so]
+    expire-in: 1 weel
