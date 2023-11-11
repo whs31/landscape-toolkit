@@ -4,4 +4,4 @@ astra linux special edition:
   script:
     - cargo --version
     - cargo build --package landscape_toolkit --release
-    - ls -la
+    - ls target/release -la
