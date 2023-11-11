@@ -1,6 +1,5 @@
 use std::{env, fs};
 use std::fs::DirEntry;
-use std::ops::{Deref, DerefMut};
 use const_format::concatcp;
 use geotiff_rs::{GeoTiff};
 use log::{debug, info, trace, warn};
@@ -125,6 +124,7 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
         }
     }
 
+    STORAGE.lock().unwrap().set_dir(directory.clone())?;
     Ok(())
 }
 
