@@ -2,7 +2,7 @@
 name = "landscape_toolkit"
 version = "0.1.0"
 edition = "2021"
-authors = ["Dmitriy Ryazancev <75864292+whs31@user.noreply.github.com>"]
+authors = ["Dmitry Ryazancev <75864292+whs31@user.noreply.github.com>"]
 
 [lib]
 crate-type = ["cdylib"]
