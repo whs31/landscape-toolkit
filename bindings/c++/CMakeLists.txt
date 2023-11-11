@@ -27,7 +27,7 @@ else()
   message(FATAL_ERROR "[LandscapeToolkit] Unknown system arch.")
 endif()
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_library(${PROJECT_NAME} STATIC)
 
 target_sources(${PROJECT_NAME}
   PUBLIC
