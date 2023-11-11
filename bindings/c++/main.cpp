@@ -1,7 +1,15 @@
 #include <iostream>
+#include <LandscapeToolkit/LandscapeToolkit>
 
 int main()
 {
-  std::cout << "Hello, World!" << std::endl;
+  LandscapeToolkit::Internal::enableLogger();
+  std::cout << std::boolalpha
+            << LandscapeToolkit::loadDirectory("elevations", LandscapeToolkit::LoadMode::Relative) << std::endl;
+  auto a = LandscapeToolkit::elevationAt(60, 30);
+  if(a.has_value())
+    std::cout << a.value() << std::endl;
+  else
+    std::cerr << a.error().message() << std::endl;
   return 0;
 }
