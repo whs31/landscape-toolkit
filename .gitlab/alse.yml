@@ -5,6 +5,7 @@ astra linux special edition:
     - cargo --version
     - cargo build --package landscape_toolkit --release
     - ls target/release -la
+    - cp target/release/*.so .
   artifacts:
     name: $CI_PROJECT_TITLE-$CI_JOB_NAME-$CI_COMMIT_TIMESTAMP-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-    paths: [target/release/*.so]
+    paths: [./*.so]
