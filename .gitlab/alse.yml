@@ -3,4 +3,4 @@ astra linux special edition:
   tags: [alse]
   script:
     - cargo --version
-    - cargo build --package led_toolkit --release
+    - cargo build --package landscape_toolkit --release
