@@ -64,12 +64,13 @@ pub fn elevation_at(coordinate: (f64, f64)) -> Result<f32, ElevationError>
     let pixel_coords = ((distance_normalized.0 * image_size.0 as f64) as usize, (distance_normalized.1 * image_size.1 as f64) as usize);
     trace!("Pixel coordinates: {:?}", &pixel_coords);
 
-    let open = match GeoTiff::from_file(&path) {
-        Ok(x) => x,
-        Err(_) => { warn!("Failed to open tiff file: {}", &path); return Err(ElevationError::LibraryError); }
-    }.get_pixel(pixel_coords.1, pixel_coords.0);
+    let value = STORAGE
+        .lock()
+        .unwrap()
+        .get_tiff(TileKey::from_f64(coordinate.0, coordinate.1))?
+        .get_pixel(pixel_coords.1, pixel_coords.0);
 
-    Ok(open as f32)
+    Ok(value as f32)
 }
 
 pub fn scan_relative_directory(relative_directory: &str) -> Result<(), ElevationError>

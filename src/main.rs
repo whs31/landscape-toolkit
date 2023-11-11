@@ -7,10 +7,7 @@ use crate::elevation::elevation_at;
 fn main() {
     elevation::init();
     elevation::scan_relative_directory("elevations").expect("Incorrectly handled error:");
-    let ele = match elevation::elevation_at((60.0, 30.0)) {
-        Ok(x) => x,
-        Err(e) => { warn!("elevation_at failed with reason: {:?}", e); 0.0 }
-    };
+
     info!("ELEVATION: {} meters", elevation_at((61.0, 31.0)).expect("PANIC"));
     info!("ELEVATION: {} meters", elevation_at((60.0, 30.0)).expect("PANIC"));
     info!("ELEVATION: {} meters", elevation_at((60.5, 30.5)).expect("PANIC"));
