@@ -1,6 +1,6 @@
 pub mod tile_key;
 
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::path::Path;
 use std::sync::Mutex;
 use tile_key::TileKey;
@@ -16,12 +16,12 @@ lazy_static!
 pub struct TileStorage
 {
     directory_path: String,
-    available: HashSet<TileKey>
+    available: HashMap<TileKey, String>
 }
 
 impl TileStorage
 {
-    pub fn new() -> Self
+    fn new() -> Self
     {
         TileStorage {
             directory_path: std::env::current_dir()
@@ -29,7 +29,7 @@ impl TileStorage
                 .into_os_string()
                 .into_string()
                 .unwrap(),
-            available: HashSet::new()
+            available: HashMap::new()
         }
     }
 
@@ -47,13 +47,13 @@ impl TileStorage
         }
     }
 
-    pub fn make_available(&mut self, key: TileKey) -> Result<(), ElevationError>
+    pub fn make_available(&mut self, key: TileKey, path: String) -> Result<(), ElevationError>
     {
-        match self.available.insert(key) {
-            true => { Ok(()) }
-            false => { Err(ElevationError::KeyAlreadyAvailable) }
+        match self.available.insert(key, path) {
+            None => { Ok(()) }
+            Some(_) => { Err(ElevationError::KeyAlreadyAvailable) }
         }
     }
 
-    pub fn is_available(&self, key: TileKey) -> bool { self.available.contains(&key) }
+    pub fn is_available(&self, key: TileKey) -> bool { self.available.contains_key(&key) }
 }

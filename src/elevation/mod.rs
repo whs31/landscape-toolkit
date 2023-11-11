@@ -73,10 +73,18 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
                 let lon_trimmed = trim_longitude_path(longitude_identity.name);
                 let coords: (i8, i16) = (latitude_identity.name.parse::<i8>().unwrap() * signs.0,
                                          lon_trimmed? * signs.1);
-                info!("Coordinate pair found: {:?}", coords);
+                debug!("Coordinate pair found: {:?}", coords);
+                match STORAGE
+                    .lock()
+                    .unwrap()
+                    .make_available(TileKey::from_int(coords.0, coords.1), longitude_identity.path) {
+                    Ok(_) => { () }
+                    Err(x) => { warn!("{:?}", x) }
+                }
             }
         }
     }
+
     Ok(())
 }
 
