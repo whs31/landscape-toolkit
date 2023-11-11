@@ -1,6 +1,11 @@
 astra linux special edition:
   stage: build
   tags: [alse]
+  cache:
+      paths:
+        - .cargo/
+        - .cache/sccache
+
   script:
     - cargo --version
     - cargo build --release
