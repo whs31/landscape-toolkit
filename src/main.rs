@@ -6,7 +6,7 @@ use std::io;
 fn main() {
     elevation::init();
     elevation::scan_relative_directory("elevations").expect("Incorrectly handled error:");
-    let ele = match elevation::elevation_at((43.5, 39.5)) {
+    let ele = match elevation::elevation_at((60.5, 29.5)) {
         Ok(x) => x,
         Err(e) => { warn!("elevation_at failed with reason: {:?}", e); 0.0 }
     };
