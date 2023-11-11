@@ -5,7 +5,7 @@ use std::io;
 
 fn main() {
     elevation::init();
-    elevation::scan_relative_directory("elevations").expect("Failure");
+    elevation::scan_relative_directory("elevations").expect("Incorrectly handled error:");
 
     let mut c = String::new();
     info!("Press any key to exit.");
