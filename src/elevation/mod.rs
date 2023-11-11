@@ -2,8 +2,7 @@ use std::{env, fs};
 use std::fs::DirEntry;
 use std::ops::{Deref, DerefMut};
 use const_format::concatcp;
-use geotiff::TIFF;
-use imagesize::ImageType::Tiff;
+use geotiff_rs::{GeoTiff};
 use log::{debug, info, trace, warn};
 use nav_types::WGS84;
 use crate::elevation::Quarter::{BottomLeft, BottomRight, TopLeft, TopRight};
@@ -21,7 +20,8 @@ pub enum ElevationError
     KeyAlreadyAvailable,
     InvalidDirectoryPath,
     InvalidFileExtension,
-    NoSuchTile
+    NoSuchTile,
+    LibraryError
 }
 
 #[derive(Debug, PartialEq)]
@@ -65,10 +65,10 @@ pub fn elevation_at(coordinate: (f64, f64)) -> Result<f32, ElevationError>
     let pixel_coords = ((distance_normalized.0 * image_size.0 as f64) as usize, (distance_normalized.1 * image_size.1 as f64) as usize);
     trace!("Pixel coordinates: {:?}", &pixel_coords);
 
-    let open = match TIFF::open(&path) {
+    let open = match GeoTiff::from_file(&path) {
         Ok(x) => x,
-        Err(_) => { warn!("Failed to open tiff file: {}", &path); return Err(ElevationError::NoSuchTile); },
-    }.get_value_at(pixel_coords.0, pixel_coords.1);
+        Err(_) => { warn!("Failed to open tiff file: {}", &path); return Err(ElevationError::LibraryError); }
+    }.get_pixel(pixel_coords.1, pixel_coords.0);
 
     Ok(open as f32)
 }
