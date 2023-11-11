@@ -5,7 +5,7 @@ use std::io;
 use crate::elevation::elevation_at;
 
 fn main() {
-    elevation::init();
+    elevation::init_logger();
     elevation::scan_relative_directory("elevations").expect("Incorrectly handled error:");
 
     info!("ELEVATION: {} meters", elevation_at((61.0, 31.0)).expect("PANIC"));
