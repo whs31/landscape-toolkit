@@ -59,7 +59,7 @@ pub fn elevation_at(coordinate: (f64, f64)) -> Result<f32, ElevationError>
     let distance_2d = (request_coord.distance(&WGS84::from_degrees_and_meters(coordinate.0, (fl.1) as f64, 0.0)),
                                 request_coord.distance(&WGS84::from_degrees_and_meters((fl.0) as f64, coordinate.1, 0.0)));
 
-    let distance_normalized = (distance_2d.0 / (tile_size.0 as f64), distance_2d.1 / (tile_size.1 as f64));
+    let distance_normalized = (distance_2d.0 / (tile_size.1 as f64), distance_2d.1 / (tile_size.0 as f64));
     trace!("Image normalized distance from BL corner: {:?}", &distance_normalized);
 
     let pixel_coords = ((distance_normalized.0 * image_size.0 as f64) as usize, (distance_normalized.1 * image_size.1 as f64) as usize);
