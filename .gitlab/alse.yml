@@ -3,8 +3,7 @@ astra linux special edition:
   tags: [alse]
   cache:
       paths:
-        - .cargo/
-        - .cache/sccache
+        - Cargo.lock
         - target/
 
   script:
