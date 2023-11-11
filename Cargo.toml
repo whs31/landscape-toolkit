@@ -2,8 +2,11 @@
 name = "led_toolkit"
 version = "0.1.0"
 edition = "2021"
+authors = ["Dmitriy Ryazancev <75864292+whs31@user.noreply.github.com>"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib"]
+bench = false
 
 [dependencies]
 geotiff-rs = "0.1.1"
