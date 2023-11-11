@@ -1,7 +1,11 @@
 use std::{env, fs};
 use std::fs::DirEntry;
+use std::ops::{Deref, DerefMut};
 use const_format::concatcp;
+use geotiff::TIFF;
+use imagesize::ImageType::Tiff;
 use log::{debug, info, trace, warn};
+use nav_types::WGS84;
 use crate::elevation::Quarter::{BottomLeft, BottomRight, TopLeft, TopRight};
 
 mod tile_storage;
@@ -16,7 +20,8 @@ pub enum ElevationError
     InvalidQuarterDirectorySpecifier,
     KeyAlreadyAvailable,
     InvalidDirectoryPath,
-    InvalidFileExtension
+    InvalidFileExtension,
+    NoSuchTile
 }
 
 #[derive(Debug, PartialEq)]
@@ -31,6 +36,37 @@ enum Quarter
 pub fn init()
 {
     pretty_env_logger::init();
+}
+
+pub fn elevation_at(coordinate: (f64, f64)) -> Result<f32, ElevationError>
+{
+    let fl = (coordinate.0.floor() as i16, coordinate.1.floor() as i16);
+    let bottom_left = WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0);
+    let top_left = WGS84::from_degrees_and_meters((fl.0 + 1) as f64, (fl.1) as f64, 0.0);
+    let bottom_right = WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1 + 1) as f64, 0.0);
+
+    let tile_size: (usize, usize) = (bottom_left.distance(&top_left) as usize, bottom_left.distance(&bottom_right) as usize);
+    let path = STORAGE
+        .lock()
+        .unwrap()
+        .get(TileKey::from_int(fl.0 as i8, fl.1))
+        .unwrap();
+    let sz = imagesize::size(&path).unwrap();
+    let image_size: (usize, usize) = (sz.width, sz.height);
+
+    let request_coord = WGS84::from_degrees_and_meters(coordinate.0, coordinate.1, 0.0f64);
+    let distance_2d = (request_coord.distance(&WGS84::from_degrees_and_meters(coordinate.0, (fl.1) as f64, 0.0)),
+                                request_coord.distance(&WGS84::from_degrees_and_meters((fl.0) as f64, coordinate.1, 0.0)));
+
+    let distance_normalized = (distance_2d.0 / (tile_size.0 as f64), distance_2d.1 / (tile_size.1 as f64));
+    let pixel_coords = ((distance_normalized.0 * image_size.0 as f64) as usize, (distance_normalized.1 * image_size.1 as f64) as usize);
+
+    let open = match TIFF::open(&path) {
+        Ok(x) => x,
+        Err(_) => { warn!("Failed to open tiff file: {}", &path); return Err(ElevationError::NoSuchTile); },
+    }.get_value_at(pixel_coords.0, pixel_coords.1);
+
+    Ok(open as f32)
 }
 
 pub fn scan_relative_directory(relative_directory: &str) -> Result<(), ElevationError>
@@ -78,8 +114,8 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
                     .lock()
                     .unwrap()
                     .make_available(TileKey::from_int(coords.0, coords.1), longitude_identity.path) {
-                    Ok(_) => { () }
-                    Err(x) => { warn!("{:?}", x) }
+                        Ok(_) => { () }
+                        Err(x) => { warn!("{:?}", x) }
                 }
             }
         }

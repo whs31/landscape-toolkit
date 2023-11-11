@@ -56,4 +56,11 @@ impl TileStorage
     }
 
     pub fn is_available(&self, key: TileKey) -> bool { self.available.contains_key(&key) }
+    pub fn get(&self, key: TileKey) -> Result<String, ElevationError>
+    {
+        match self.is_available(key) {
+            true => { Ok(self.available.get(&key).unwrap().clone()) }
+            false => { Err(ElevationError::NoSuchTile) }
+        }
+    }
 }
