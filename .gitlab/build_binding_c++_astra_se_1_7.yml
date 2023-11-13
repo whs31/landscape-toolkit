@@ -2,8 +2,12 @@ astra linux special edition cxx binding build:
   stage: build-cxx
   tags: [alse]
   needs: ["astra linux special edition test"]
+  dependencies:
+    - astra linux special edition build
 
   script:
+    - ls -la
+    - cd bindings/c++
     - cmake-alse -GNinja && ninja
     - ls -la
 

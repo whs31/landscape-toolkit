@@ -2,8 +2,12 @@ windows x86_64 cxx binding build:
   stage: build-cxx
   tags: [windows]
   needs: ["windows x86_64 test"]
+  dependencies:
+    - windows x86_64 build
 
   script:
+    - ls -la
+    - cd bindings/c++
     - mingw64-cmake -GNinja -DCMAKE_BUILD_TYPE=Release && cmake --build .
     - ls -la
 
