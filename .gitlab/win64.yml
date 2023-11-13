@@ -3,7 +3,6 @@ windows:
   tags: [windows]
   script:
     - cargo --version
-    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -y
-    - /root/.cargo/bin/cross build --release --target x86_64-pc-windows-gnu
+    - cargo build --release --target x86_64-pc-windows-gnu
     - ls target/release -la
      
