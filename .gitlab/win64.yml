@@ -9,7 +9,7 @@ windows:
   script:
     - cargo --version
     - cargo build --release --target x86_64-pc-windows-gnu
-    - ls target/x86_64-pc-windows-gnu -la
+    - ls target/x86_64-pc-windows-gnu/release -la
      
     #- cp target/release/*.so .
 
