@@ -1,7 +1,9 @@
 astra linux special edition cxx binding build:
   stage: build-cxx
   tags: [alse]
-  needs: ["astra linux special edition test"]
+  needs:
+    - job: astra linux special edition build
+      artifacts: true
 
   script:
     - ls -la

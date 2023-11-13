@@ -1,7 +1,10 @@
 astra linux special edition test:
   stage: test-rust
   tags: [alse]
-  needs: ["astra linux special edition build"]
+  needs:
+    - job: astra linux special edition build
+      artifacts: true
+
   cache:
     paths:
       - Cargo.lock

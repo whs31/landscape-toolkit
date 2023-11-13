@@ -1,7 +1,10 @@
 windows x86_64 test:
   stage: test-rust
   tags: [windows]
-  needs: ["windows x86_64 build"]
+  needs:
+    - job: windows x86_64 build
+      artifacts: true
+
   cache:
     paths:
       - Cargo.lock
