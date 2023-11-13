@@ -11,9 +11,9 @@ pub struct LEDResult
 
 #[no_mangle]
 #[allow(dead_code)]
-pub extern "C" fn led_init_logger()
+pub extern "C" fn led_init_logger() -> bool
 {
-    elevation::init_logger();
+    elevation::init_logger()
 }
 
 #[no_mangle]

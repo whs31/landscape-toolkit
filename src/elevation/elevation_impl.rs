@@ -60,7 +60,7 @@ fn elevation_at_no_preload(coordinate: (f64, f64)) -> Result<f32, ElevationError
         .get_tiff(TileKey::from_f64(coordinate.0, coordinate.1))?
         .get_pixel(pixel_coords.1, pixel_coords.0);
 
-    trace!("Elevation at {:?}: {} meters", coordinate, value);
+    debug!("Elevation at {:?}: {} meters", coordinate, value);
 
     Ok(value as f32)
 }
@@ -74,13 +74,11 @@ fn elevation_at_preloaded(coordinate: (f64, f64)) -> Result<f32, ElevationError>
         true => lock.get(key).unwrap(),
         false => load_tile(key, &mut lock)?
     };
-    trace!("5");
     let tile_size: (usize, usize) = (WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0)
                                          .distance(&WGS84::from_degrees_and_meters((fl.0 + 1) as f64, (fl.1) as f64, 0.0)) as usize,
                                      WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0)
                                          .distance(&WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1 + 1) as f64, 0.0)) as usize);
 
-    trace!("6");
     let sz = match imagesize::size(&path) {
         Ok(x) => x,
         Err(_) => {
@@ -103,7 +101,7 @@ fn elevation_at_preloaded(coordinate: (f64, f64)) -> Result<f32, ElevationError>
         .get_tiff(TileKey::from_f64(coordinate.0, coordinate.1))?
         .get_pixel(pixel_coords.1, pixel_coords.0);
 
-    trace!("Elevation at {:?}: {} meters", coordinate, value);
+    debug!("Elevation at {:?}: {} meters", coordinate, value);
 
     Ok(value as f32)
 }
@@ -120,7 +118,7 @@ fn load_tile(key: TileKey, lock: &mut MutexGuard<TileStorage>) -> Result<String,
     let path = format!("{}{}{}{}{}{}{}.{}", top_level, MAIN_SEPARATOR,
                        quarter, MAIN_SEPARATOR, key.latitude.abs(), MAIN_SEPARATOR,
                        key.longitude.abs(), FILE_EXTENSION);
-    trace!("Searching path for tile {:?} is {}", key.clone(), &path);
+    debug!("Searching path for tile {:?} is {}", key.clone(), &path);
     match lock.make_available(key, path) {
         Ok(_) => {},
         Err(e) => { return Err(e) }

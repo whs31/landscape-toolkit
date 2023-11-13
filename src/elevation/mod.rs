@@ -20,9 +20,12 @@ pub enum ElevationError
     LibraryError
 }
 
-pub fn init_logger()
+pub fn init_logger() -> bool
 {
-    pretty_env_logger::init();
+    match pretty_logger::init_to_defaults() {
+        Ok(_) => { true }
+        Err(_) => { false }
+    }
 }
 
 pub fn scan_relative_directory(relative_directory: &str) -> Result<(), ElevationError>
@@ -60,7 +63,7 @@ mod tests
     #[test]
     fn test_elevation_preload()
     {
-        elevation::init_logger();
+        let _ = elevation::init_logger();
         let result = elevation::set_relative_directory(format!("testdata{}elevations", MAIN_SEPARATOR).as_str());
         let a = elevation::elevation_at((60.0, 30.0), PreloadTile).unwrap();
         let b = elevation::elevation_at((60.9, 30.9), PreloadTile).unwrap();
