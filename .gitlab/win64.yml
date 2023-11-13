@@ -3,7 +3,8 @@ windows:
   tags: [windows]
   script:
     - cargo --version
-    - rustup target add x86_64-pc-windows-gnuc --toolchain beta
+    - ip a
+    - whoami
     - /root/.cargo/bin/cross build --release --target x86_64-pc-windows-gnu
     - ls target/release -la
      
