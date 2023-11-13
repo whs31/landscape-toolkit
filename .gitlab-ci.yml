@@ -4,10 +4,10 @@ variables:
   PKG_VER: 0.0.0
 
 include:
-    - local: /.gitlab/alse.yml
-    - local: /.gitlab/win64.yml
-    - local: /.gitlab/alse_test.yml
-    - local: /.gitlab/win64_test.yml
+    - local: /.gitlab/build_astra_se_1_7.yml
+    - local: /.gitlab/build_windows_x86_64.yml
+    - local: /.gitlab/test_astra_se_1_7.yml
+    - local: /.gitlab/test_windows_x86_64.yml
 
 stages:
   - build
