@@ -1,6 +1,7 @@
 astra linux special edition test:
   stage: test
   tags: [alse]
+  needs: ["astra linux special edition build"]
   cache:
     paths:
       - Cargo.lock
