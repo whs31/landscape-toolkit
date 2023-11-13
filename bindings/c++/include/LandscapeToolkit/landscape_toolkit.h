@@ -10,30 +10,50 @@ using std::string;
 
 namespace LandscapeToolkit
 {
-  enum class LoadMode
+  enum class DirectoryPathMode
   {
       Absolute,
       Relative
   };
 
-  namespace Internal
+  enum class PreloadMode
   {
-    void enableLogger() { led_init_logger(); }
+      PreloadTile = 1,
+      NoPreload = 2
+  };
+
+  namespace Private
+  {
+    auto enableLogger() -> bool { return led_init_logger(); }
+    auto version() -> string
+    {
+      auto vs = led_version();
+      return std::to_string(vs.major) + "." + std::to_string(vs.minor) + "." + std::to_string(vs.patch);
+    }
   } // Internal
 
-  auto loadDirectory(const string& path, LoadMode mode) -> bool
+  auto loadDirectory(const string& path, DirectoryPathMode mode) -> bool
   {
     switch(mode)
     {
-      case LoadMode::Absolute: return led_load_directory(path.c_str());
-      case LoadMode::Relative: return led_load_relative_directory(path.c_str());
+      case DirectoryPathMode::Absolute: return led_load_directory(path.c_str());
+      case DirectoryPathMode::Relative: return led_load_relative_directory(path.c_str());
     }
   }
 
-  auto elevationAt(f64 latitude, f64 longitude) -> expected<f32, std::error_code>
+  auto setDirectory(const string& path, DirectoryPathMode mode) -> bool
   {
-    auto a = led_elevation_at(latitude, longitude);
-    if(a.valid)
+    switch(mode)
+    {
+      case DirectoryPathMode::Absolute: return led_set_directory(path.c_str());
+      case DirectoryPathMode::Relative: return led_set_relative_directory(path.c_str());
+    }
+  }
+
+  auto elevationAt(f64 latitude, f64 longitude, PreloadMode mode) -> expected<f32, std::error_code>
+  {
+    auto a = led_elevation_at(latitude, longitude, static_cast<int>(mode));
+    //if(a.valid)
       return a.result;
     return unexpected(std::make_error_code(std::errc::bad_message));
   }

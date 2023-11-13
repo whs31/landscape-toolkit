@@ -1,11 +1,11 @@
-use std::ffi::{c_char, c_double, c_int, CStr};
+use std::ffi::{c_char, c_double, c_float, c_int, CStr};
 use num_traits::{FromPrimitive, ToPrimitive};
 use crate::elevation;
 
 #[repr(C)]
 pub struct LEDResult
 {
-    pub result: c_double,
+    pub result: c_float,
     pub valid: bool
 }
 
@@ -17,6 +17,8 @@ pub struct LEDVersion
     pub patch: c_int
 }
 
+#[no_mangle]
+#[allow(dead_code)]
 pub extern "C" fn led_version() -> LEDVersion
 {
     LEDVersion {
@@ -82,7 +84,7 @@ pub fn led_elevation_at(latitude: c_double, longitude: c_double, preload_mode: c
         .unwrap())
         .unwrap()) {
         Ok(x) => LEDResult {
-            result: x as c_double,
+            result: x as c_float,
             valid: true
         },
         Err(_) => LEDResult {

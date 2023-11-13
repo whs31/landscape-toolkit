@@ -16,7 +16,17 @@ extern "C" RUST_LED_TOOLKIT_IMPORT struct LEDResult
   bool valid;
 };
 
-extern "C" RUST_LED_TOOLKIT_IMPORT void led_init_logger();
+extern "C" RUST_LED_TOOLKIT_IMPORT struct LEDVersion
+{
+  int major;
+  int minor;
+  int patch;
+};
+
+extern "C" RUST_LED_TOOLKIT_IMPORT LEDVersion led_version();
+extern "C" RUST_LED_TOOLKIT_IMPORT bool led_init_logger();
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_load_relative_directory(const char*);
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_load_directory(const char*);
-extern "C" RUST_LED_TOOLKIT_IMPORT LEDResult led_elevation_at(double, double);
+extern "C" RUST_LED_TOOLKIT_IMPORT bool led_set_relative_directory(const char*);
+extern "C" RUST_LED_TOOLKIT_IMPORT bool led_set_directory(const char*);
+extern "C" RUST_LED_TOOLKIT_IMPORT LEDResult led_elevation_at(double, double, int);
