@@ -1,9 +1,10 @@
 use std::path::MAIN_SEPARATOR;
+use std::sync::{MutexGuard};
 use log::{debug, trace, warn};
 use nav_types::WGS84;
 use num_derive::FromPrimitive;
 use crate::elevation::ElevationError;
-use crate::elevation::tile_storage::STORAGE;
+use crate::elevation::tile_storage::{STORAGE, TileStorage};
 use crate::elevation::tile_storage::tile_key::TileKey;
 use crate::elevation::utils::FILE_EXTENSION;
 
@@ -24,15 +25,13 @@ pub fn elevation_at(coordinate: (f64, f64), preload_mode: PreloadMode) -> Result
 
 fn elevation_at_no_preload(coordinate: (f64, f64)) -> Result<f32, ElevationError>
 {
+    let lock = STORAGE.lock().unwrap();
     let fl = (coordinate.0.floor() as i16, coordinate.1.floor() as i16);
     let tile_size: (usize, usize) = (WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0)
                                          .distance(&WGS84::from_degrees_and_meters((fl.0 + 1) as f64, (fl.1) as f64, 0.0)) as usize,
                                      WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0)
                                          .distance(&WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1 + 1) as f64, 0.0)) as usize);
-    let path = match STORAGE
-        .lock()
-        .unwrap()
-        .get(TileKey::from_int(fl.0 as i8, fl.1)) {
+    let path = match lock.get(TileKey::from_int(fl.0 as i8, fl.1)) {
         Ok(x) => x,
         Err(e) => {
             warn!("No such tile present in storage: {:?}, error code: {:?}", fl, e);
@@ -57,9 +56,7 @@ fn elevation_at_no_preload(coordinate: (f64, f64)) -> Result<f32, ElevationError
     let pixel_coords = ((distance_normalized.0 * image_size.0 as f64) as usize, (distance_normalized.1 * image_size.1 as f64) as usize);
     trace!("Pixel coordinates: {:?}", &pixel_coords);
 
-    let value = STORAGE
-        .lock()
-        .unwrap()
+    let value = lock
         .get_tiff(TileKey::from_f64(coordinate.0, coordinate.1))?
         .get_pixel(pixel_coords.1, pixel_coords.0);
 
@@ -70,24 +67,20 @@ fn elevation_at_no_preload(coordinate: (f64, f64)) -> Result<f32, ElevationError
 
 fn elevation_at_preloaded(coordinate: (f64, f64)) -> Result<f32, ElevationError>
 {
+    let mut lock = STORAGE.lock().unwrap();
     let fl = (coordinate.0.floor() as i16, coordinate.1.floor() as i16);
     let key = TileKey::from_int(fl.0 as i8, fl.1);
-    let path = match STORAGE
-        .lock()
-        .unwrap()
-        .is_available(key) {
-        true => STORAGE
-            .lock()
-            .unwrap()
-            .get(key)
-            .unwrap(),
-        false => load_tile(key).unwrap()
+    let path = match lock.is_available(key) {
+        true => lock.get(key).unwrap(),
+        false => load_tile(key, &mut lock)?
     };
+    trace!("5");
     let tile_size: (usize, usize) = (WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0)
                                          .distance(&WGS84::from_degrees_and_meters((fl.0 + 1) as f64, (fl.1) as f64, 0.0)) as usize,
                                      WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1) as f64, 0.0)
                                          .distance(&WGS84::from_degrees_and_meters((fl.0) as f64, (fl.1 + 1) as f64, 0.0)) as usize);
 
+    trace!("6");
     let sz = match imagesize::size(&path) {
         Ok(x) => x,
         Err(_) => {
@@ -106,9 +99,7 @@ fn elevation_at_preloaded(coordinate: (f64, f64)) -> Result<f32, ElevationError>
     let pixel_coords = ((distance_normalized.0 * image_size.0 as f64) as usize, (distance_normalized.1 * image_size.1 as f64) as usize);
     trace!("Pixel coordinates: {:?}", &pixel_coords);
 
-    let value = STORAGE
-        .lock()
-        .unwrap()
+    let value = lock
         .get_tiff(TileKey::from_f64(coordinate.0, coordinate.1))?
         .get_pixel(pixel_coords.1, pixel_coords.0);
 
@@ -117,12 +108,10 @@ fn elevation_at_preloaded(coordinate: (f64, f64)) -> Result<f32, ElevationError>
     Ok(value as f32)
 }
 
-fn load_tile(key: TileKey) -> Result<String, ElevationError>
+fn load_tile(key: TileKey, lock: &mut MutexGuard<TileStorage>) -> Result<String, ElevationError>
 {
     debug!("Loading tile from key {:?}", key.clone());
-    let top_level = STORAGE
-        .lock()
-        .unwrap()
+    let top_level = lock
         .directory_path
         .clone();
     let quarter = key
@@ -132,15 +121,10 @@ fn load_tile(key: TileKey) -> Result<String, ElevationError>
                        quarter, MAIN_SEPARATOR, key.latitude.abs(), MAIN_SEPARATOR,
                        key.longitude.abs(), FILE_EXTENSION);
     trace!("Searching path for tile {:?} is {}", key.clone(), &path);
-    let ma = STORAGE
-        .lock()
-        .unwrap()
-        .make_available(key, path);
-
-    match ma {
+    match lock.make_available(key, path) {
         Ok(_) => {},
         Err(e) => { return Err(e) }
     };
     
-    STORAGE.lock().unwrap().get(key)
+    lock.get(key)
 }

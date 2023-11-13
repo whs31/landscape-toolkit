@@ -60,6 +60,7 @@ mod tests
     #[test]
     fn test_elevation_preload()
     {
+        elevation::init_logger();
         let result = elevation::set_relative_directory(format!("testdata{}elevations", MAIN_SEPARATOR).as_str());
         let a = elevation::elevation_at((60.0, 30.0), PreloadTile).unwrap();
         let b = elevation::elevation_at((60.9, 30.9), PreloadTile).unwrap();
@@ -76,7 +77,6 @@ mod tests
     #[test]
     fn test_scan_relative_directory()
     {
-        elevation::init_logger();
         let result = elevation::scan_relative_directory(format!("testdata{}elevations", MAIN_SEPARATOR).as_str());
         let a = elevation::elevation_at((60.0, 30.0), NoPreload).unwrap();
         let b = elevation::elevation_at((60.9, 30.9), NoPreload).unwrap();

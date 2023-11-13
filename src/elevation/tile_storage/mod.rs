@@ -1,19 +1,16 @@
 pub mod tile_key;
 
 use std::collections::HashMap;
-use std::path::Path;
+use std::path::{MAIN_SEPARATOR, Path};
+use once_cell::sync::Lazy;
 use std::sync::Mutex;
 use geotiff_rs::GeoTiff;
 use tile_key::TileKey;
-use lazy_static::lazy_static;
 use log::warn;
 
 use crate::elevation::ElevationError;
 
-lazy_static!
-{
-    pub static ref STORAGE: Mutex<TileStorage> = Mutex::new(TileStorage::new());
-}
+pub static STORAGE: Lazy<Mutex<TileStorage>> = Lazy::new(|| Mutex::new(TileStorage::new()));
 
 pub struct TileStorage
 {
@@ -27,11 +24,13 @@ impl TileStorage
     fn new() -> Self
     {
         TileStorage {
-            directory_path: std::env::current_dir()
+            directory_path: format!("{}{}{}", std::env::current_dir()
                 .unwrap()
                 .into_os_string()
                 .into_string()
                 .unwrap(),
+            MAIN_SEPARATOR,
+            "elevations"),
             available: HashMap::new(),
             storage: HashMap::new()
         }
