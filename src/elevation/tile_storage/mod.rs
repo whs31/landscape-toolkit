@@ -17,7 +17,7 @@ lazy_static!
 
 pub struct TileStorage
 {
-    directory_path: String,
+    pub directory_path: String,
     available: HashMap<TileKey, String>,
     storage: HashMap<TileKey, GeoTiff>
 }

@@ -1,8 +1,10 @@
-#[derive(Eq, Hash, PartialEq, Copy, Clone)]
+use crate::elevation::quarter::Quarter;
+
+#[derive(Eq, Hash, PartialEq, Copy, Clone, Debug)]
 pub struct TileKey
 {
-    latitude: i8,
-    longitude: i16
+    pub latitude: i8,
+    pub longitude: i16
 }
 
 impl TileKey
@@ -29,6 +31,25 @@ impl TileKey
         TileKey {
             latitude: latitude.floor() as i8,
             longitude: longitude.floor() as i16
+        }
+    }
+
+    pub fn quarter(&self) -> Quarter
+    {
+        if self.latitude >= 0 && self.longitude < 0 { return Quarter::TopLeft }
+        if self.latitude >= 0 && self.longitude >= 0 { return Quarter::TopRight }
+        if self.latitude < 0 && self.longitude < 0 { return Quarter::BottomLeft }
+
+        Quarter::BottomRight
+    }
+
+    pub fn quarter_as_u8(&self) -> u8
+    {
+        match self.quarter() {
+            Quarter::TopLeft => 0,
+            Quarter::TopRight => 1,
+            Quarter::BottomLeft => 2,
+            Quarter::BottomRight => 3
         }
     }
 }

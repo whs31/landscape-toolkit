@@ -1,7 +1,7 @@
 use const_format::concatcp;
 use crate::elevation::ElevationError;
 
-const FILE_EXTENSION: &'static str = "tif";
+pub const FILE_EXTENSION: &'static str = "tif";
 
 pub fn trim_longitude_path(path: String) -> Result<i16, ElevationError>
 {

@@ -51,7 +51,7 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
         }
     }
 
-    STORAGE.lock().unwrap().set_dir(directory.clone())?;
+    set_directory(directory)?;
     Ok(())
 }
 
@@ -69,4 +69,26 @@ pub fn scan_relative_directory(relative_directory: &str) -> Result<(), Elevation
     );
 
     scan_directory(&abs_path)
+}
+
+pub fn set_relative_directory(directory: &str) -> Result<(), ElevationError>
+{
+    info!("Tile relative directory is set to `{}`", &directory);
+    let abs_path = format!(
+        "{}{}{}", env::current_dir()
+            .unwrap()
+            .into_os_string()
+            .into_string()
+            .unwrap(),
+        std::path::MAIN_SEPARATOR,
+        directory
+    );
+
+    set_directory(&abs_path)
+}
+
+pub fn set_directory(directory: &String) -> Result<(), ElevationError>
+{
+    info!("Tile directory is set to `{}`", &directory);
+    STORAGE.lock().unwrap().set_dir(directory.clone())
 }
