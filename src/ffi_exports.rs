@@ -1,10 +1,10 @@
-use std::ffi::{c_char, CStr};
+use std::ffi::{c_char, c_double, CStr};
 use crate::elevation;
 
 #[repr(C)]
 pub struct LEDResult
 {
-    pub result: f32,
+    pub result: c_double,
     pub valid: bool
 }
 
@@ -37,11 +37,11 @@ pub fn led_load_directory(path: *const c_char) -> bool
 
 #[no_mangle]
 #[allow(dead_code)]
-pub fn led_elevation_at(latitude: f64, longitude: f64) -> LEDResult
+pub fn led_elevation_at(latitude: c_double, longitude: c_double) -> LEDResult
 {
-    match elevation::elevation_at((latitude, longitude)) {
+    match elevation::elevation_at((latitude as f64, longitude as f64)) {
         Ok(x) => LEDResult {
-            result: x,
+            result: x as c_double,
             valid: true
         },
         Err(_) => LEDResult {
@@ -59,3 +59,32 @@ fn c_char_to_string(ptr: *const c_char) -> String
         .unwrap()
 }
 
+#[cfg(test)]
+mod tests
+{
+    use std::ffi::CString;
+    use std::path::MAIN_SEPARATOR;
+    use crate::ffi_exports;
+
+    #[test]
+    fn test_ffi_functions()
+    {
+        let path = CString::new(format!("testdata{}elevations", MAIN_SEPARATOR)
+            .as_str()
+            .to_owned())
+            .unwrap()
+            .into_raw()
+            .cast_const();
+        let result = ffi_exports::led_load_relative_directory(path);
+        let a = ffi_exports::led_elevation_at(60.0, 30.0).result;
+        let b = ffi_exports::led_elevation_at(60.9, 30.9).result;
+        let c = ffi_exports::led_elevation_at(60.5, 30.5).result;
+        let d = ffi_exports::led_elevation_at(50.5, 39.5);
+
+        assert!(result);
+        assert!(a >= -1.0 && a <= 1.0);
+        assert!(b >= 2.0 && b <= 4.0);
+        assert!(c >= 60.0 && c <= 67.0);
+        assert!(d.valid == false && d.result <= 1.0 && d.result >= -1.0);
+    }
+}
