@@ -8,4 +8,4 @@ astra linux special edition test:
 
   script:
     - cargo --version
-    - cargo --test
+    - cargo test

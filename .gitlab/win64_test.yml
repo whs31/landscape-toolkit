@@ -8,4 +8,4 @@ windows x86_64 test:
 
   script:
     - cargo --version
-    - cargo --test
+    - cargo test

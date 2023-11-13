@@ -42,7 +42,6 @@ pub fn elevation_at(coordinate: (f64, f64)) -> Result<f32, ElevationError>
 mod tests
 {
     use std::path::MAIN_SEPARATOR;
-    use log::warn;
     use crate::elevation;
 
     #[test]
