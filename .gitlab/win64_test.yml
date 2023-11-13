@@ -8,4 +8,8 @@ windows x86_64 test:
 
   script:
     - cargo --version
-    - cargo test
+    - cargo test -- --format=json -Z unstable-options --report-time | junitify --out $CI_PROJECT_DIR/tests/
+  artifacts:
+    when: always
+    reports:
+      junit: $CI_PROJECT_DIR/tests/*.xml
