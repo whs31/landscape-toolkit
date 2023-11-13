@@ -1,8 +1,19 @@
 windows:
   stage: build
   tags: [windows]
+  cache:
+    paths:
+      - Cargo.lock
+      - target/
+
   script:
     - cargo --version
     - cargo build --release --target x86_64-pc-windows-gnu
-    - ls target -la
+    - ls target/x86_64-pc-windows-gnu -la
      
+    #- cp target/release/*.so .
+
+#  artifacts:
+#    name: $CI_PROJECT_TITLE-$CI_JOB_NAME-$CI_COMMIT_TIMESTAMP-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+#    paths: [./*.so]
+#    expire_in: 1 week
