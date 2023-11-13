@@ -1,0 +1,13 @@
+windows x86_64 cxx binding build:
+  stage: build-cxx
+  tags: [windows]
+  needs: ["windows x86_64 test"]
+
+  script:
+    - mingw64-cmake -GNinja -DCMAKE_BUILD_TYPE=Release && cmake --build .
+    - ls -la
+
+  artifacts:
+    name: $CI_PROJECT_TITLE-$CI_JOB_NAME-$CI_COMMIT_TIMESTAMP-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    paths: [ ./*.so ]
+    expire_in: 1 week

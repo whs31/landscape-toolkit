@@ -1,5 +1,5 @@
 astra linux special edition test:
-  stage: test
+  stage: test-rust
   tags: [alse]
   needs: ["astra linux special edition build"]
   cache:

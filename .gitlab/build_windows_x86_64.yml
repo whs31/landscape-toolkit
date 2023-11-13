@@ -1,5 +1,5 @@
 windows x86_64 build:
-  stage: build
+  stage: build-rust
   tags: [windows]
   cache:
     paths:

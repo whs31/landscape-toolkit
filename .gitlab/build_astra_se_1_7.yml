@@ -1,5 +1,5 @@
 astra linux special edition build:
-  stage: build
+  stage: build-rust
   tags: [alse]
   cache:
       paths:

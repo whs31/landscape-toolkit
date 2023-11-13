@@ -8,7 +8,10 @@ include:
     - local: /.gitlab/build_windows_x86_64.yml
     - local: /.gitlab/test_astra_se_1_7.yml
     - local: /.gitlab/test_windows_x86_64.yml
+    - local: /.gitlab/build_binding_c++_astra_se_1_7.yml
+    - local: /.gitlab/build_binding_c++_windows_x86_64.yml
 
 stages:
-  - build
-  - test
+  - build-rust
+  - test-rust
+  - build-cxx
