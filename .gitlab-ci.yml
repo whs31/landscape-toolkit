@@ -5,8 +5,10 @@ variables:
 
 include:
     - local: /.gitlab/alse.yml
-  # Removed due to unpresent rustc package on Win64 runner
     - local: /.gitlab/win64.yml
+    - local: /.gitlab/alse_test.yml
+    - local: /.gitlab/win64_test.yml
 
 stages:
   - build
+  - test

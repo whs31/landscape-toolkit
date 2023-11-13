@@ -1,4 +1,4 @@
-astra linux special edition:
+astra linux special edition build:
   stage: build
   tags: [alse]
   cache:

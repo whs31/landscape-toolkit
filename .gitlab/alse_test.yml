@@ -1,0 +1,11 @@
+astra linux special edition test:
+  stage: test
+  tags: [alse]
+  cache:
+    paths:
+      - Cargo.lock
+      - target/
+
+  script:
+    - cargo --version
+    - cargo --test

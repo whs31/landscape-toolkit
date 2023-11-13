@@ -1,4 +1,4 @@
-windows:
+windows x86_64 build:
   stage: build
   tags: [windows]
   cache:

@@ -1,0 +1,11 @@
+windows x86_64 test:
+  stage: test
+  tags: [windows]
+  cache:
+    paths:
+      - Cargo.lock
+      - target/
+
+  script:
+    - cargo --version
+    - cargo --test
