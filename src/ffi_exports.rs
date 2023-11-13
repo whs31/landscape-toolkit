@@ -9,6 +9,23 @@ pub struct LEDResult
     pub valid: bool
 }
 
+#[repr(C)]
+pub struct LEDVersion
+{
+    pub major: c_int,
+    pub minor: c_int,
+    pub patch: c_int
+}
+
+pub extern "C" fn led_version() -> LEDVersion
+{
+    LEDVersion {
+        major: env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap(),
+        minor: env!("CARGO_PKG_VERSION_MINOR").parse().unwrap(),
+        patch: env!("CARGO_PKG_VERSION_PATCH").parse().unwrap()
+    }
+}
+
 #[no_mangle]
 #[allow(dead_code)]
 pub extern "C" fn led_init_logger() -> bool

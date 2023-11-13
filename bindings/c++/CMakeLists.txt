@@ -47,7 +47,6 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} STATIC)
-#add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
   PUBLIC
@@ -59,7 +58,6 @@ target_sources(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
     Libra
-  PRIVATE
     landscape_toolkit
 )
 
@@ -70,25 +68,26 @@ target_include_directories(${PROJECT_NAME}
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   file(GLOB_RECURSE LED_TOOLKIT_TESTS tests/*)
-  message(NOTICE "-- [Qt Extensions] Tests enabled")
-  add_compile_definitions(LED_TOOLKIT_TESTS)
-  add_executable(${PROJECT_NAME}-Test)
+  message(NOTICE "-- [LandscapeToolkit] Tests enabled")
 
-  target_sources(${PROJECT_NAME}-Test
+  target_compile_definitions(${PROJECT_NAME}
     PRIVATE
-      include/LandscapeToolkit/LandscapeToolkit
-      include/LandscapeToolkit/landscape_toolkit.h
-      include/LandscapeToolkit/rust_landscape_toolkit_ffi.h
-
-    ${LED_TOOLKIT_TESTS}
+      LED_TOOLKIT_TESTS
   )
 
-  target_link_libraries(${PROJECT_NAME}-Test
+  add_executable(${PROJECT_NAME}Test)
+
+  target_sources(${PROJECT_NAME}Test
+    PRIVATE
+      ${LED_TOOLKIT_TESTS}
+  )
+
+  target_link_libraries(${PROJECT_NAME}Test
     PRIVATE
       GTest::GTest
       Libra
-      landscape_toolkit
+      ${PROJECT_NAME}
   )
 else()
-  message(STATUS "[Qt Extensions] Tests disabled")
+  message(STATUS "[LandscapeToolkit] Tests disabled")
 endif()
