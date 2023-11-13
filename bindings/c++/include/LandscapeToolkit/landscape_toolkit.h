@@ -39,6 +39,7 @@ namespace LandscapeToolkit
       case DirectoryPathMode::Absolute: return led_load_directory(path.c_str());
       case DirectoryPathMode::Relative: return led_load_relative_directory(path.c_str());
     }
+    return false;
   }
 
   auto setDirectory(const string& path, DirectoryPathMode mode) -> bool
@@ -48,13 +49,14 @@ namespace LandscapeToolkit
       case DirectoryPathMode::Absolute: return led_set_directory(path.c_str());
       case DirectoryPathMode::Relative: return led_set_relative_directory(path.c_str());
     }
+    return false;
   }
 
   auto elevationAt(f64 latitude, f64 longitude, PreloadMode mode) -> expected<f32, std::error_code>
   {
-    auto a = led_elevation_at(latitude, longitude, static_cast<int>(mode));
-    //if(a.valid)
-      return a.result;
+    auto a = led_elevation_at_as_int(latitude, longitude, static_cast<int>(mode));
+    if(a != -404)
+      return a;
     return unexpected(std::make_error_code(std::errc::bad_message));
   }
 } // LandscapeToolkit

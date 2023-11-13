@@ -94,6 +94,19 @@ pub fn led_elevation_at(latitude: c_double, longitude: c_double, preload_mode: c
     }
 }
 
+#[no_mangle]
+#[allow(dead_code)]
+pub fn led_elevation_at_as_int(latitude: c_double, longitude: c_double, preload_mode: c_int) -> c_int
+{
+    match elevation::elevation_at((latitude as f64, longitude as f64), FromPrimitive::from_i32(preload_mode
+        .to_i32()
+        .unwrap())
+        .unwrap()) {
+        Ok(x) => x as c_int,
+        Err(_) => -404
+    }
+}
+
 fn c_char_to_string(ptr: *const c_char) -> String
 {
     unsafe { CStr::from_ptr(ptr) }

@@ -10,13 +10,13 @@
   #error "Unknown architecture.";
 #endif
 
-extern "C" RUST_LED_TOOLKIT_IMPORT struct LEDResult
+extern "C" struct RUST_LED_TOOLKIT_IMPORT LEDResult
 {
   float result;
   bool valid;
 };
 
-extern "C" RUST_LED_TOOLKIT_IMPORT struct LEDVersion
+extern "C" struct RUST_LED_TOOLKIT_IMPORT LEDVersion
 {
   int major;
   int minor;
@@ -30,3 +30,4 @@ extern "C" RUST_LED_TOOLKIT_IMPORT bool led_load_directory(const char*);
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_set_relative_directory(const char*);
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_set_directory(const char*);
 extern "C" RUST_LED_TOOLKIT_IMPORT LEDResult led_elevation_at(double, double, int);
+extern "C" RUST_LED_TOOLKIT_IMPORT int led_elevation_at_as_int(double, double, int);
