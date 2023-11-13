@@ -3,7 +3,7 @@ windows:
   tags: [windows]
   script:
     - cargo --version
-    - dnf5 install iproute
+    - dnf5 -y install iproute
     - ip a
     - whoami
     - /root/.cargo/bin/cross build --release --target x86_64-pc-windows-gnu
