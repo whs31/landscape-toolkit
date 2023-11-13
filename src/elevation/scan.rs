@@ -33,9 +33,12 @@ pub fn scan_directory(directory: &String) -> Result<(), ElevationError>
             {
                 let longitude_identity = FSObjectIdentity::from_dir_entry(&lat_path.as_ref().unwrap());
                 let signs = quarter_signs(&quarter);
-                let lon_trimmed = utils::trim_longitude_path(longitude_identity.name);
+                let lon_trimmed = match utils::trim_longitude_path(longitude_identity.name.clone()) {
+                    Ok(x) => x,
+                    Err(_) => { warn!("Invalid file extension: {}, skipping...", &longitude_identity.name); continue; },
+                };
                 let coords: (i8, i16) = (latitude_identity.name.parse::<i8>().unwrap() * signs.0,
-                                         lon_trimmed? * signs.1);
+                                         lon_trimmed * signs.1);
                 debug!("Coordinate pair found: {:?}", coords);
                 match STORAGE
                     .lock()

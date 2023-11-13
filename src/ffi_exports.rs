@@ -58,3 +58,4 @@ fn c_char_to_string(ptr: *const c_char) -> String
         .map(|s| s.to_owned())
         .unwrap()
 }
+

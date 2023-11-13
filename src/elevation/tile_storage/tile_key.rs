@@ -7,6 +7,7 @@ pub struct TileKey
 
 impl TileKey
 {
+    #[allow(dead_code)]
     pub fn new() -> Self
     {
         TileKey {

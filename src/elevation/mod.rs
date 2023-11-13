@@ -38,3 +38,27 @@ pub fn elevation_at(coordinate: (f64, f64)) -> Result<f32, ElevationError>
     elevation_impl::elevation_at(coordinate)
 }
 
+#[cfg(test)]
+mod tests
+{
+    use std::path::MAIN_SEPARATOR;
+    use log::warn;
+    use crate::elevation;
+
+    #[test]
+    fn test_scan_relative_directory()
+    {
+        elevation::init_logger();
+        let result = elevation::scan_relative_directory(format!("testdata{}elevations", MAIN_SEPARATOR).as_str());
+        let a = elevation::elevation_at((60.0, 30.0)).unwrap();
+        let b = elevation::elevation_at((60.9, 30.9)).unwrap();
+        let c = elevation::elevation_at((60.5, 30.5)).unwrap();
+        let d = elevation::elevation_at((50.5, 39.5));
+
+        assert!(result.is_ok());
+        assert!(a >= -1.0 && a <= 1.0);
+        assert!(b >= 2.0 && b <= 4.0);
+        assert!(c >= 60.0 && c <= 67.0);
+        assert!(d.is_err());
+    }
+}
