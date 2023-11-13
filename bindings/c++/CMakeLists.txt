@@ -13,6 +13,9 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON CACHE BOOL "Export all symbols")
+set(CMAKE_SHARED_LIBRARY_ENABLE_EXPORTS ON)
+
+option(BUILD_TESTS "Build tests" OFF)
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   if(WIN32)
@@ -31,14 +34,18 @@ endif()
 
 
 add_subdirectory(libs/libra)
-add_library(landscape_toolkit SHARED IMPORTED)
+add_library(landscape_toolkit SHARED IMPORTED GLOBAL)
+
 if(WIN32)
-  message(STATUS "[LandscapeToolkit] Searching for .dll in ${PROJECT_SOURCE_DIR}/plugins...")
+  message(STATUS "[LandscapeToolkit] Searching for .dll in ${PROJECT_SOURCE_DIR}/plugins/Windows/x64/landscape_toolkit.dll")
   set_target_properties(landscape_toolkit PROPERTIES IMPORTED_LOCATION
     ${PROJECT_SOURCE_DIR}/plugins/Windows/x64/landscape_toolkit.dll
   )
+  set_target_properties(landscape_toolkit PROPERTIES IMPORTED_IMPLIB
+    ${PROJECT_SOURCE_DIR}/plugins/Windows/x64/landscape_toolkit.dll
+  )
 elseif(LINUX)
-  message(STATUS "[LandscapeToolkit] Searching for .so in ${PROJECT_SOURCE_DIR}/plugins...")
+  message(STATUS "[LandscapeToolkit] Searching for .so in ${PROJECT_SOURCE_DIR}/plugins/Linux/x64/liblandscape_toolkit.so")
   set_target_properties(landscape_toolkit PROPERTIES IMPORTED_LOCATION
     ${PROJECT_SOURCE_DIR}/plugins/Linux/x64/liblandscape_toolkit.so
   )
@@ -46,48 +53,55 @@ else()
   message(FATAL_ERROR "[LandscapeToolkit] Unknown system arch.")
 endif()
 
-add_library(${PROJECT_NAME} STATIC)
-
-target_sources(${PROJECT_NAME}
-  PUBLIC
-    include/LandscapeToolkit/LandscapeToolkit
-    include/LandscapeToolkit/landscape_toolkit.h
-    include/LandscapeToolkit/rust_landscape_toolkit_ffi.h
-)
-
-target_link_libraries(${PROJECT_NAME}
-  PUBLIC
-    Libra
-    landscape_toolkit
-)
-
-target_include_directories(${PROJECT_NAME}
-  PUBLIC
-    include
-)
-
-if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+if(BUILD_TESTS)
   file(GLOB_RECURSE LED_TOOLKIT_TESTS tests/*)
-  message(NOTICE "-- [LandscapeToolkit] Tests enabled")
+  message(NOTICE "-- [LandscapeToolkit] Tests enabled!")
 
-  target_compile_definitions(${PROJECT_NAME}
+  add_executable(${PROJECT_NAME})
+
+  target_sources(${PROJECT_NAME}
     PRIVATE
-      LED_TOOLKIT_TESTS
-  )
+      include/LandscapeToolkit/LandscapeToolkit
+      include/LandscapeToolkit/landscape_toolkit.h
+      include/LandscapeToolkit/rust_landscape_toolkit_ffi.h
 
-  add_executable(${PROJECT_NAME}Test)
-
-  target_sources(${PROJECT_NAME}Test
-    PRIVATE
       ${LED_TOOLKIT_TESTS}
   )
 
-  target_link_libraries(${PROJECT_NAME}Test
-    PRIVATE
-      GTest::GTest
+  target_link_libraries(${PROJECT_NAME}
+    PUBLIC
       Libra
-      ${PROJECT_NAME}
+      landscape_toolkit
+      GTest::GTest
+  )
+
+  target_include_directories(${PROJECT_NAME}
+    PUBLIC
+      include
+      tests
   )
 else()
   message(STATUS "[LandscapeToolkit] Tests disabled")
+
+  add_library(${PROJECT_NAME} STATIC)
+
+  target_sources(${PROJECT_NAME}
+    PUBLIC
+      include/LandscapeToolkit/LandscapeToolkit
+      include/LandscapeToolkit/landscape_toolkit.h
+      include/LandscapeToolkit/rust_landscape_toolkit_ffi.h
+  )
+
+  target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+    Libra
+    landscape_toolkit
+  )
+
+  target_include_directories(${PROJECT_NAME}
+    PUBLIC
+    include
+  )
 endif()
+
+unset(BUILD_TESTS CACHE)
