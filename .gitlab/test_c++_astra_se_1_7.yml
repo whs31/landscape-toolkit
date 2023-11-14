@@ -1,15 +1,15 @@
-windows x86_64 cxx binding test:
+astra linux special edition cxx binding test:
   stage: test-cxx
   tags: [windows]
   allow_failure: true
   needs:
-    - job: windows x86_64 cxx binding build
+    - job: astra linux special edition cxx binding build
       artifacts: false
 
   script:
     - ls -la
     - cd bindings/c++
-    - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON && cmake --build .
+    - cmake-alse -GNinja -DBUILD_TESTS=ON && ninja .
     - ls -la
     - ./LandscapeToolkit --gtest_output=xml --platform linuxfb
 
