@@ -1,0 +1,18 @@
+windows x86_64 cxx binding test:
+  stage: build-cxx
+  tags: [windows]
+  needs:
+    - job: windows x86_64 cxx binding build
+      artifacts: false
+
+  script:
+    - ls -la
+    - cd bindings/c++
+    - mingw64-cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON && cmake --build .
+    - ls -la
+    - ./LandscapeToolkit --gtest_output=xml --platform linuxfb
+
+  artifacts:
+    reports:
+      junit: test_detail.xml
+    expire_in: 1 week
