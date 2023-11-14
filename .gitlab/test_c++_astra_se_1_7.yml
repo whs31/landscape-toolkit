@@ -1,6 +1,6 @@
 astra linux special edition cxx binding test:
   stage: test-cxx
-  tags: [windows]
+  tags: [alse]
   allow_failure: true
   needs:
     - job: astra linux special edition cxx binding build
