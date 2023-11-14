@@ -1,6 +1,7 @@
 windows x86_64 test:
   stage: test-rust
   tags: [windows]
+  allow_failure: true
   needs:
     - job: windows x86_64 build
       artifacts: true

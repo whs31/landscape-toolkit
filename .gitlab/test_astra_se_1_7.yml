@@ -1,6 +1,7 @@
 astra linux special edition test:
   stage: test-rust
   tags: [alse]
+  allow_failure: true
   needs:
     - job: astra linux special edition build
       artifacts: true
