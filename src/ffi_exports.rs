@@ -1,5 +1,7 @@
-use std::ffi::{c_char, c_double, c_float, c_int, CStr};
+use std::env;
+use std::ffi::{c_char, c_double, c_float, c_int, CStr, CString};
 use num_traits::{FromPrimitive, ToPrimitive};
+use once_cell::sync::Lazy;
 use crate::elevation;
 
 #[repr(C)]
@@ -19,13 +21,29 @@ pub struct LEDVersion
 
 #[no_mangle]
 #[allow(dead_code)]
-pub extern "C" fn led_version() -> LEDVersion
+pub extern fn led_version() -> LEDVersion
 {
     LEDVersion {
         major: env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap(),
         minor: env!("CARGO_PKG_VERSION_MINOR").parse().unwrap(),
         patch: env!("CARGO_PKG_VERSION_PATCH").parse().unwrap()
     }
+}
+
+static BINARY_DIRECTORY: Lazy<String> = Lazy::new(|| { env::current_dir()
+    .unwrap()
+    .into_os_string()
+    .into_string()
+    .unwrap() });
+
+
+#[no_mangle]
+#[allow(dead_code)]
+pub extern fn led_binary_directory() -> *const c_char
+{
+    let s = BINARY_DIRECTORY.clone();
+    let c = CString::new(s).unwrap();
+    c.as_ptr()
 }
 
 #[no_mangle]
@@ -121,6 +139,7 @@ mod tests
     use std::ffi::CString;
     use std::path::MAIN_SEPARATOR;
     use crate::ffi_exports;
+    use crate::ffi_exports::c_char_to_string;
 
     #[test]
     fn test_ffi_no_preload()
@@ -164,5 +183,12 @@ mod tests
         assert!(b >= 2.0 && b <= 4.0);
         assert!(c >= 60.0 && c <= 67.0);
         assert!(d.valid == false && d.result <= 1.0 && d.result >= -1.0);
+    }
+
+    #[test]
+    fn test_miscellaneous()
+    {
+        let _ = c_char_to_string(ffi_exports::led_binary_directory());
+        assert!(!ffi_exports::led_binary_directory().is_null());
     }
 }
