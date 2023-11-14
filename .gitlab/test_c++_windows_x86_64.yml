@@ -4,10 +4,13 @@ windows x86_64 cxx binding test:
   allow_failure: true
   needs:
     - job: windows x86_64 cxx binding build
-      artifacts: false
+    - job: astra linux special edition build
+      artifacts: true
 
   script:
     - ls -la
+    - cp liblandscape_toolkit.so ./bindings/c++/plugins/Linux/x64/liblandscape_toolkit.so
+    - cp liblandscape_toolkit.so ./bindings/c++/liblandscape_toolkit.so
     - cd bindings/c++
     - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON && cmake --build .
     - ls -la
