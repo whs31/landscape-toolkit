@@ -17,7 +17,7 @@ compose plugins:
     - mkdir x64
     - cd ..
     - cp landscape_toolkit.dll ./Windows/x64/landscape_toolkit.dll
-    - cp liblandscapetoolkit.so ./Linux/x64/liblandscape_toolkit.dll
+    - cp liblandscape_toolkit.so ./Linux/x64/liblandscape_toolkit.so
     - ls -la
 
   artifacts:
