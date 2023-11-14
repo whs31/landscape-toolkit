@@ -15,6 +15,8 @@ windows x86_64 cxx binding test:
     - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON && cmake --build .
     - ls -la
     - ./LandscapeToolkit --gtest_output=xml --platform linuxfb
+    - cd ../../
+    - cp bindings/c++/test_detail.xml .
 
   artifacts:
     reports:
