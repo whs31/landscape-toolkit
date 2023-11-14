@@ -1,0 +1,25 @@
+compose plugins:
+  stage: compose
+  tags: [linux]
+  needs:
+    - job: astra linux special edition build
+    - job: windows x86_64 build
+      artifacts: true
+
+  script:
+    - ls -la
+    - mkdir Windows
+    - mkdir Linux
+    - cd Windows
+    - mkdir x64
+    - cd ..
+    - cd Linux
+    - mkdir x64
+    - cd ..
+    - cp landscape_toolkit.dll ./Windows/x64/landscape_toolkit.dll
+    - cp liblandscapetoolkit.so ./Linux/x64/liblandscape_toolkit.dll
+    - ls -la
+
+  artifacts:
+    paths: [ ./Windows, ./Linux  ]
+    expire_in: 1 week

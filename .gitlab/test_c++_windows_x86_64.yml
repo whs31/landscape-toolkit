@@ -1,6 +1,6 @@
 windows x86_64 cxx binding test:
   stage: test-cxx
-  tags: [windows]
+  tags: [linux]
   allow_failure: true
   needs:
     - job: windows x86_64 cxx binding build

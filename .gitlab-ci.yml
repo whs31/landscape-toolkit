@@ -12,9 +12,11 @@ include:
   - local: /.gitlab/build_binding_c++_windows_x86_64.yml
   - local: /.gitlab/test_c++_windows_x86_64.yml
   - local: /.gitlab/test_c++_astra_se_1_7.yml
+  - local: /.gitlab/compose_plugins.yml
 
 stages:
   - build-rust
   - test-rust
   - build-cxx
   - test-cxx
+  - compose
