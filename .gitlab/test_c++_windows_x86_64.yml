@@ -16,9 +16,8 @@ windows x86_64 cxx binding test:
     - ls -la
     - ./LandscapeToolkit --gtest_output=xml --platform linuxfb
     - cd ../../
-    - cp bindings/c++/test_detail.xml .
 
   artifacts:
     reports:
-      junit: test_detail.xml
+      junit: bindings/c++/test_detail.xml
     expire_in: 1 week
