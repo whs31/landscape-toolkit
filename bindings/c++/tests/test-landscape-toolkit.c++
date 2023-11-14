@@ -19,6 +19,11 @@ TEST(Basic, Version)
   EXPECT_EQ(LandscapeToolkit::Private::version(), "0.1.0");
 }
 
+TEST(Basic, BinaryDirectory)
+{
+  EXPECT_STREQ(LandscapeToolkit::binaryDirectory().c_str(), "./");
+}
+
 TEST(Basic, ElevationAt)
 {
 

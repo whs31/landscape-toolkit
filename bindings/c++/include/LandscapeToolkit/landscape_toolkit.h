@@ -32,6 +32,8 @@ namespace LandscapeToolkit
     }
   } // Internal
 
+  auto binaryDirectory() -> string { return { led_binary_directory() }; }
+
   auto loadDirectory(const string& path, DirectoryPathMode mode) -> bool
   {
     switch(mode)

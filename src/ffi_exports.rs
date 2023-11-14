@@ -36,14 +36,17 @@ static BINARY_DIRECTORY: Lazy<String> = Lazy::new(|| { env::current_dir()
     .into_string()
     .unwrap() });
 
-
 #[no_mangle]
 #[allow(dead_code)]
 pub extern fn led_binary_directory() -> *const c_char
 {
-    let s = BINARY_DIRECTORY.clone();
-    let c = CString::new(s).unwrap();
-    c.as_ptr()
+    let c_str = CString::new(BINARY_DIRECTORY.clone()).unwrap();
+    c_str.into_raw() as *const _
+}
+
+pub unsafe extern fn led_free_string(ptr: *const c_char)
+{
+    let _ = CString::from_raw(ptr as *mut _);
 }
 
 #[no_mangle]
@@ -188,7 +191,8 @@ mod tests
     #[test]
     fn test_miscellaneous()
     {
-        let _ = c_char_to_string(ffi_exports::led_binary_directory());
+        let str = c_char_to_string(ffi_exports::led_binary_directory());
         assert!(!ffi_exports::led_binary_directory().is_null());
+        assert!(!str.is_empty());
     }
 }

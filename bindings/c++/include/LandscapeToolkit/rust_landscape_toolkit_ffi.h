@@ -24,6 +24,7 @@ extern "C" struct RUST_LED_TOOLKIT_IMPORT LEDVersion
 };
 
 extern "C" RUST_LED_TOOLKIT_IMPORT LEDVersion led_version();
+extern "C" RUST_LED_TOOLKIT_IMPORT const char* led_binary_directory();
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_init_logger();
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_load_relative_directory(const char*);
 extern "C" RUST_LED_TOOLKIT_IMPORT bool led_load_directory(const char*);
