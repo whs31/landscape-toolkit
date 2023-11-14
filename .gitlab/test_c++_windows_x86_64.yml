@@ -1,5 +1,5 @@
 windows x86_64 cxx binding test:
-  stage: build-cxx
+  stage: test-cxx
   tags: [windows]
   needs:
     - job: windows x86_64 cxx binding build
