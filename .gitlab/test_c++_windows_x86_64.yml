@@ -10,14 +10,17 @@ windows x86_64 cxx binding test:
   script:
     - ls -la
     - cp liblandscape_toolkit.so ./bindings/c++/plugins/Linux/x64/liblandscape_toolkit.so
-    - cp liblandscape_toolkit.so ./bindings/c++/liblandscape_toolkit.so
     - cd bindings/c++
-    - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON && cmake --build .
+    - mkdir target
+    - cd ../../
+    - cp liblandscape_toolkit.so ./bindings/c++/target/liblandscape_toolkit.so
+    - cd bindings/c++/target
+    - cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON && cmake --build .
     - ls -la
     - ./LandscapeToolkit --gtest_output=xml --platform linuxfb
-    - cd ../../
+    - cd ../../../
 
   artifacts:
     reports:
-      junit: bindings/c++/test_detail.xml
+      junit: bindings/c++/target/test_detail.xml
     expire_in: 1 week

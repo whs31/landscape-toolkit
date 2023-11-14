@@ -9,11 +9,14 @@ astra linux special edition cxx binding test:
   script:
     - ls -la
     - cd bindings/c++
-    - cmake-alse -GNinja -DBUILD_TESTS=ON && ninja .
+    - mkdir target
+    - cd target
+    - cmake-alse .. -GNinja -DBUILD_TESTS=ON && ninja .
     - ls -la
     - ./LandscapeToolkit --gtest_output=xml --platform linuxfb
+    - cd ../../../
 
   artifacts:
     reports:
-      junit: test_detail.xml
+      junit: bindings/c++/target/test_detail.xml
     expire_in: 1 week
